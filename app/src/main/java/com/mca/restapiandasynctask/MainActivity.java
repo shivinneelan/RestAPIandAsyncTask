@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,16 +22,30 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button button;
+    GetData getData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GetData getData=new GetData();
-        getData.execute();
+        button=(Button) findViewById(R.id.button);
+        getData=new GetData();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // call asyncTask class to get the php file and data
+
+                getData.execute();
+
+            }
+        });
 
         // make  Manifest       android:usesCleartextTraffic="true"
         // add permission for internet      <uses-permission android:name="android.permission.INTERNET" />
-        //
+        //  use ur local host address onURL
 
     }
 
@@ -53,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             String result="";
 
-            String connstr = "https://www.w3schools.com/php/phptryit.asp?filename=tryphp_echo1";
+            String connstr = " http://192.168.43.136/RestAPIandAsyncTask.php";
             try {
                 URL url = new URL(connstr);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -62,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 http.setDoOutput(true);
                 OutputStream ops = http.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-
-                //writer.write(data);
+                // !=======  use encode while transfer data to the php file
+                //String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(id,"UTF-8");
+                //                writer.write(data);
+                //
                 writer.flush();
                 writer.close();
                 ops.close();
