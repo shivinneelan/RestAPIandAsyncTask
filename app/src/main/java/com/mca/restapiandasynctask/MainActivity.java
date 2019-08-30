@@ -3,6 +3,7 @@ package com.mca.restapiandasynctask;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -22,89 +23,40 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button button;
-    GetData getData;
+    Button button,button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button=(Button) findViewById(R.id.button);
-        getData=new GetData();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // call asyncTask class to get the php file and data
-
-                getData.execute();
-
-            }
-        });
 
         // make  Manifest       android:usesCleartextTraffic="true"
         // add permission for internet      <uses-permission android:name="android.permission.INTERNET" />
         //  use ur local host address onURL
 
-    }
+        button=(Button) findViewById(R.id.button1);
+        button2=(Button) findViewById(R.id.button2);
 
-    class GetData extends AsyncTask<Void, Void,String>   // 1. pass any arguments. 3. return any arguments
-    {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+                Intent intent=new Intent(MainActivity.this,UsingAsyncTaskActivity.class);
+                startActivity(intent);
 
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Loading...");
-            dialog.show();
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            dialog.setMessage(s);
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            String result="";
-
-            String connstr = " http://192.168.43.136/RestAPIandAsyncTask.php";
-            try {
-                URL url = new URL(connstr);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http.setRequestMethod("POST");
-                http.setDoInput(true);
-                http.setDoOutput(true);
-                OutputStream ops = http.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ops,"UTF-8"));
-                // !=======  use encode while transfer data to the php file
-                //String data = URLEncoder.encode("id","UTF-8")+"="+URLEncoder.encode(id,"UTF-8");
-                //                writer.write(data);
-                //
-                writer.flush();
-                writer.close();
-                ops.close();
-
-                InputStream ips = http.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(ips,"ISO-8859-1"));
-                String line ="";
-                while ((line = reader.readLine()) != null)
-                {
-                    result += line;
-                }
-                reader.close();
-                ips.close();
-                http.disconnect();
-                return result;
-
-            } catch (MalformedURLException e) {
-                result = e.getMessage();
-            } catch (IOException e) {
-                result = e.getMessage();
             }
-            return result;
+        });
 
-        }
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,UsingVolleyActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
+
+
 }
